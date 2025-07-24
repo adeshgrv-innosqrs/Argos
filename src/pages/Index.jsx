@@ -1,14 +1,17 @@
-import { useState, useEffect } from 'react';
-import Navbar from '../components/Navbar';
-import tasks from '../data/tasks.json';
+import { useEffect, useState } from 'react';
+import { FaChevronDown, FaChevronUp, FaSearch } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import { FaSearch, FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import Navbar from '../components/Navbar';
+import StatusFilter from '../components/StatusFilter';
+import tasks from '../data/tasks.json';
 
 const Index = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredTasks, setFilteredTasks] = useState(tasks);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
+
+  const [statusFilter, setStatusFilter] = useState('All');
 
   const totalTasks = tasks.length;
   const completedTasks = tasks.filter(t => t.annotations === 2).length;
@@ -86,6 +89,17 @@ const Index = () => {
     return sortableTasks;
   };
 
+  //filter Logic
+    useEffect(() => {
+    if (statusFilter === 'All') {
+      setFilteredTasks(tasks);
+    } else if (statusFilter === 'Completed') {
+      setFilteredTasks(tasks.filter(t => t.annotations === 2));
+    } else if (statusFilter === 'Partial') {
+      setFilteredTasks(tasks.filter(t => t.annotations === 1));
+    }
+  }, [statusFilter]);
+
   const sortedTasks = getSortedTasks();
 
   return (
@@ -107,9 +121,14 @@ const Index = () => {
         {/* Table Section */}
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
           <div className="flex flex-col md:flex-row justify-between items-center p-4 border-b">
+            
+            {/* call Filter  */}
+            <StatusFilter value={statusFilter} onChange={setStatusFilter} /> 
+
             <h2 className="text-xl font-bold text-gray-800 mb-4 md:mb-0"></h2>
             <div className="relative w-full md:w-64">
               <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+               
                 <FaSearch className="text-gray-400" />
               </div>
               <input
