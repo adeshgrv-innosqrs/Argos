@@ -26,7 +26,7 @@ const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#E9F1FA] p-4">
       <div className="bg-white shadow-xl rounded-xl p-8 w-full max-w-md">
-        <h2 className="text-3xl font-bold text-center text-[#00ABE4] mb-8">Argos Login</h2>
+        <h2 className="text-3xl font-bold text-center bg-gradient-to-r from-[#008B65] via-[#BDE648] to-[#F0F0F0] bg-clip-text text-transparent mb-8">Argos Login</h2>
 
         {error && (
           <div className="mb-6 p-3 bg-red-50 text-red-500 rounded-lg text-center border border-red-200">

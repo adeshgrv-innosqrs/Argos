@@ -91,7 +91,7 @@ const QuestionsPanel = ({ answers, setAnswers, locked, setLocked }) => {
             className="w-5 h-5 text-[#00ABE4] rounded focus:ring-[#00ABE4]"
           />
           <span className="font-semibold text-gray-800">
-            Lock your answers {!allAnswered && <span className="text-red-500">*</span>}
+            Save your answers {!allAnswered && <span className="text-red-500">*</span>}
           </span>
         </label>
         {!allAnswered && (
