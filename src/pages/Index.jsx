@@ -8,13 +8,16 @@ import tasks from '../data/tasks.json';
 const Index = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
-  const [filteredTasks, setFilteredTasks] = useState(tasks);
+  const [filteredTasks, setFilteredTasks] = useState([]);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
   const [statusFilter, setStatusFilter] = useState('All');
 
-  const totalTasks = tasks.length;
-  const completedTasks = tasks.filter(t => t.annotations === 2).length;
-  const tasksLeft = tasks.filter(t => t.annotations !== 2).length;
+  // Filter tasks to show only those with annotator Ibrahim
+  const ibrahimTasks = tasks.filter(t => t.annotator === 'Ibrahim');
+  
+  const totalTasks = ibrahimTasks.length;
+  const completedTasks = ibrahimTasks.filter(t => t.annotations === 2).length;
+  const tasksLeft = ibrahimTasks.filter(t => t.annotations !== 2).length;
 
   // Card colors
   const cardColors = [
@@ -23,21 +26,27 @@ const Index = () => {
     'bg-gradient-to-r from-yellow-50 to-yellow-100 border-l-4 border-yellow-400'
   ];
 
+  // Initialize filtered tasks with Ibrahim's tasks
+  useEffect(() => {
+    setFilteredTasks(ibrahimTasks);
+  }, []);
+
   // Search functionality
   useEffect(() => {
     if (!searchTerm) {
-      setFilteredTasks(tasks);
+      setFilteredTasks(ibrahimTasks);
       return;
     }
 
     const term = searchTerm.toLowerCase();
-    const results = tasks.filter(task => {
+    const results = ibrahimTasks.filter(task => {
       return (
         String(task.serialNumber).toLowerCase().includes(term) ||
         task.question.text.toLowerCase().includes(term) ||
         String(task.annotations).toLowerCase().includes(term) ||
         task.question.category.toLowerCase().includes(term) ||
-        (task.annotations === 2 ? 'john doe' : '-').includes(term) ||
+        task.annotator.toLowerCase().includes(term) ||
+        'John'.toLowerCase().includes(term) ||
         '2025-07-23'.toLowerCase().includes(term)
       );
     });
@@ -63,11 +72,17 @@ const Index = () => {
           aValue = a.question.text;
           bValue = b.question.text;
         } else if (sortConfig.key === 'annotator') {
-          aValue = a.annotations === 2 ? 'John Doe' : '-';
-          bValue = b.annotations === 2 ? 'John Doe' : '-';
+          aValue = a.annotator;
+          bValue = b.annotator;
+        } else if (sortConfig.key === 'assignBy') {
+          aValue = 'John';
+          bValue = 'John';
         } else if (sortConfig.key === 'date') {
           aValue = '2025-07-23';
           bValue = '2025-07-23';
+        } else if (sortConfig.key === 'category') {
+          aValue = a.question.category;
+          bValue = b.question.category;
         } else {
           aValue = a[sortConfig.key];
           bValue = b[sortConfig.key];
@@ -81,14 +96,16 @@ const Index = () => {
     return sortableTasks;
   };
 
-  // Filter logic
+  // Filter logic - now working with Ibrahim's tasks only
   useEffect(() => {
     if (statusFilter === 'All') {
-      setFilteredTasks(tasks);
+      setFilteredTasks(ibrahimTasks);
     } else if (statusFilter === 'Completed') {
-      setFilteredTasks(tasks.filter(t => t.annotations === 2));
+      setFilteredTasks(ibrahimTasks.filter(t => t.annotations === 2));
     } else if (statusFilter === 'Partial') {
-      setFilteredTasks(tasks.filter(t => t.annotations === 1));
+      setFilteredTasks(ibrahimTasks.filter(t => t.annotations === 1));
+    } else if (statusFilter === 'Not Started') {
+      setFilteredTasks(ibrahimTasks.filter(t => t.annotations === 0));
     }
   }, [statusFilter]);
 
@@ -136,7 +153,8 @@ const Index = () => {
                     { key: 'question', label: 'Question' },
                     { key: 'annotations', label: 'Status' },
                     { key: 'category', label: 'Category' },
-                    { key: 'annotator', label: 'Assign By' },
+                    { key: 'annotator', label: 'Annotator' },
+                    { key: 'assignBy', label: 'Assign By' },
                     { key: 'date', label: 'Date' }
                   ].map((header) => (
                     <th
@@ -166,6 +184,11 @@ const Index = () => {
                     <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{t.serialNumber}</td>
                     <td className="px-6 py-4 max-w-xs">{t.question.text}</td>
                     <td className="px-6 py-4">
+                      {t.annotations === 0 && (
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
+                          Not Started
+                        </span>
+                      )}
                       {t.annotations === 1 && (
                         <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
                           Pending
@@ -182,7 +205,8 @@ const Index = () => {
                         {t.question.category}
                       </span>
                     </td>
-                    <td className="px-6 py-4">{t.annotations === 2 ? 'Charle Haris' : '-'}</td>
+                    <td className="px-6 py-4">{t.annotator}</td>
+                    <td className="px-6 py-4">John</td>
                     <td className="px-6 py-4">2025-07-23</td>
                   </tr>
                 ))}

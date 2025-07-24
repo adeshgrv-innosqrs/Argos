@@ -22,7 +22,7 @@ const Navbar = ({ active = false }) => {
         </div>
         <div className="flex items-center space-x-2">
           <CircleUserRound className='text-[#FFCE70]'/>
-          <span className="text-sm font-semibold text-gray-300">John Doe</span>
+          <span className="text-sm font-semibold text-gray-300">Ibrahim</span>
           <span className="text-sm font-semibold text-gray-300">Annotator ID</span>
         </div>
         <LogOut className="cursor-pointer text-[#FFCE70] hover:text-[#00FFB3]" onClick={() => window.location.href = '/'} />
