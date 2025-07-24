@@ -3,6 +3,7 @@ import { FaSearch, FaChartPie, FaPlusCircle, FaFileDownload } from 'react-icons/
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import StatusFilter from '../components/StatusFilter';
+import AddProject from '../components/AddProject';
 import tasks from '../data/tasks.json';
 
 const PMIndex = () => {
@@ -11,6 +12,7 @@ const PMIndex = () => {
     const [filteredTasks, setFilteredTasks] = useState(tasks);
     const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
     const [statusFilter, setStatusFilter] = useState('All');
+    const [isAddProjectOpen, setIsAddProjectOpen] = useState(false);
 
     const totalTasks = tasks.length;
     const completedTasks = tasks.filter((t) => t.annotations === 2).length;
@@ -74,11 +76,14 @@ const PMIndex = () => {
             <div className="p-6 space-y-6 max-w-7xl mx-auto">
                 {/* PM Tools Section */}
                 <div className="flex flex-col sm:flex-row justify-between gap-4 items-center bg-white p-5 rounded-xl shadow">
-                    <button className="flex items-center gap-3 px-5 py-3 bg-[#00ABE4] text-white rounded-lg font-semibold shadow hover:bg-[#008ec2]">
+                    <button 
+                        onClick={() => setIsAddProjectOpen(true)}
+                        className="flex items-center gap-3 px-5 py-3 bg-[#00ABE4] text-white rounded-lg font-semibold shadow hover:bg-[#008ec2] transition-colors"
+                    >
                         <FaPlusCircle className="text-lg" />
                         Add Project
                     </button>
-                    <button className="flex items-center gap-3 px-5 py-3 border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-100">
+                    <button className="flex items-center gap-3 px-5 py-3 border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
                         <FaFileDownload className="text-lg" />
                         Download Report
                     </button>
@@ -177,6 +182,12 @@ const PMIndex = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Add Project Modal */}
+            <AddProject 
+                isOpen={isAddProjectOpen} 
+                onClose={() => setIsAddProjectOpen(false)} 
+            />
         </div>
     );
 };
