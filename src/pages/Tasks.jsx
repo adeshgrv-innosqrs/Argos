@@ -57,18 +57,60 @@ const Timer = () => {
 
 // Info Panel Component
 const InfoPanel = ({ question, category }) => (
-    <div className="bg-white p-6 rounded shadow">
-        <div className="flex items-center justify-between">
-            <Timer />
-            <div className="flex-1 text-center px-4">
-                <h1 className="text-2xl font-bold text-gray-800 mb-2">{question}</h1>
-            </div>
-            <div className="bg-[#E9F1FA] px-4 py-2 rounded">
-                <span className="text-sm font-semibold text-[#00ABE4]">Category: {category}</span>
-            </div>
+    <div className="bg-white p-4 rounded shadow">
+      <div className="flex items-start justify-between">
+        {/* Left Top: Timer */}
+        <Timer />
+  
+        {/* Center: Question */}
+        <div className="flex-1 text-center px-4">
+          <h1 className="text-xl font-bold text-gray-800">{question}</h1>
         </div>
+  
+        {/* Right Side (Top: Category, Bottom: Navigation) */}
+        <div className="flex flex-col items-end justify-between h-full">
+          {/* Right Top: Category */}
+          <div className="bg-[#E9F1FA] px-1 py-1 rounded mb-4">
+            <span className="text-xs font-semibold text-[#00ABE4]">
+              Category: {category}
+            </span>
+          </div>
+  
+          {/* Right Bottom: Navigation Buttons */}
+          <div className="flex space-x-1">
+            <button className="p-1 rounded-full bg-[#E9F1FA] hover:bg-[#00ABE4] hover:text-white transition-colors">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </button>
+            <button className="p-1 rounded-full bg-[#E9F1FA] hover:bg-[#00ABE4] hover:text-white transition-colors">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
-);
+  );
 
 
 
@@ -128,15 +170,12 @@ const Tasks = () => {
 
     const handleSubmit = () => {
         alert('Annotation submitted successfully!');
-        // Reset form if needed
+        
         setAnswers({});
         setLocked(false);
     };
 
-    const handleSerialSelect = (serial) => {
-        // In a real app, you'd use navigate here
-        console.log(`Navigate to task ${serial}`);
-    };
+   
 
     if (!task) {
         return (
@@ -161,18 +200,10 @@ const Tasks = () => {
                 />
 
                 {/* Main Content Grid */}
-                <div className="grid grid-cols-12 gap-6" style={{ minHeight: '600px' }}>
-                    {/* Index Panel - 10% width */}
-                    {/* <div className="col-span-12 lg:col-span-1">
-                        <IndexPanel
-                            tasks={tasks}
-                            currentSerial={currentSerial}
-                            onSerialSelect={handleSerialSelect}
-                        />
-                    </div> */}
+                <div className="grid grid-cols-12 gap-5" style={{ minHeight: '600px' }}>
+                    
 
-                    {/* Questions Panel - 50% width */}
-                    <div className="col-span-12 lg:col-span-6">
+                    <div className="col-span-12 lg:col-span-5">
                         <QuestionsPanel
                             answers={answers}
                             setAnswers={setAnswers}
@@ -181,8 +212,8 @@ const Tasks = () => {
                         />
                     </div>
 
-                    {/* Search Engine - 40% width */}
-                    <div className="col-span-12 lg:col-span-6">
+                    
+                    <div className="col-span-12 lg:col-span-7">
                         <SearchEngine query={task.question.text} />
                     </div>
                 </div>
