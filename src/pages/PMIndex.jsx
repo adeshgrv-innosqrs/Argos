@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { FaSearch, FaChartPie, FaPlusCircle, FaFileDownload } from 'react-icons/fa';
+import { FaFileDownload, FaPlusCircle, FaSearch } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import AddProject from '../components/AddProject';
 import Navbar from '../components/Navbar';
 import StatusFilter from '../components/StatusFilter';
-import AddProject from '../components/AddProject';
 import tasks from '../data/tasks.json';
 
 const PMIndex = () => {
@@ -78,7 +78,7 @@ const PMIndex = () => {
                 <div className="flex flex-col sm:flex-row justify-between gap-4 items-center bg-white p-5 rounded-xl shadow">
                     <button 
                         onClick={() => setIsAddProjectOpen(true)}
-                        className="flex items-center gap-3 px-5 py-3 bg-[#00ABE4] text-white rounded-lg font-semibold shadow hover:bg-[#008ec2] transition-colors"
+                        className="flex items-center gap-3 px-5 py-3 bg-gradient-to-r from-[#ffffff] to-[#D1FFF1] text-black rounded-lg font-semibold shadow "
                     >
                         <FaPlusCircle className="text-lg" />
                         Add Project
@@ -95,7 +95,7 @@ const PMIndex = () => {
                     ['Tasks Left', tasksLeft], ['Completed Tasks (%)', `${completedPercentage}%`]].map(([title, value], idx) => (
                         <div
                             key={idx}
-                            className="p-5 rounded-xl shadow bg-gradient-to-r from-blue-50 to-blue-100 border-l-4 border-blue-400"
+                            className="p-5 rounded-xl shadow bg-gradient-to-r from-[#ffffff] to-[#D1FFF1] border-l-4 border-[#00AB7D]"
                         >
                             <div className="text-3xl font-bold text-gray-800">{value}</div>
                             <div className="text-md font-semibold text-gray-600 mt-2">{title}</div>
@@ -144,7 +144,7 @@ const PMIndex = () => {
 
                     <div className="overflow-x-auto">
                         <table className="min-w-full text-sm">
-                            <thead className="bg-gradient-to-r from-[#00ABE4] to-[#0077B6] text-white">
+                            <thead className="bg-gradient-to-r from-gray-800 to-[#00AB7D] text-white">
                                 <tr>
                                     <th className="px-6 py-4 text-left font-semibold">Serial</th>
                                     <th className="px-6 py-4 text-left font-semibold">Question</th>

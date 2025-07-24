@@ -1,6 +1,6 @@
 // components/StatusFilter.jsx
 const StatusFilter = ({ value, onChange }) => {
-  const options = ['All', 'Completed', 'Partial'];
+  const options = ['All', 'Completed', 'Pending'];
 
   return (
     <div className="flex gap-2">

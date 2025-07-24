@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
+import InstructionGuide from '../components/InstructionGuide';
 import Navbar from '../components/Navbar';
 import QuestionsPanel from '../components/QuestionPanel';
 import SearchEngine from '../components/SearchEngine';
-import InstructionGuide from '../components/InstructionGuide';
 
 const tasks = [
   {
@@ -62,13 +62,13 @@ const InfoPanel = ({ question, category, onShowInstructions }) => (
       </div>
 
       <div className="flex flex-col items-end justify-between h-full space-y-2">
-        <div className="bg-[#E9F1FA] px-2 py-1 rounded text-xs font-semibold text-[#00ABE4]">
+        <div className="bg-[#E0FFE0] px-2 py-1 rounded text-xs font-semibold text-black">
           Category: {category}
         </div>
 
         <button
           onClick={onShowInstructions}
-          className="text-xs font-semibold text-white bg-[#00ABE4] hover:bg-[#007ab8] px-3 py-1 rounded-full shadow transition-colors"
+          className="text-xs font-semibold bg-[#E0FFE0] px-3 py-1 rounded-full shadow transition-colors"
         >
           Show Instructions
         </button>

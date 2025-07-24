@@ -21,9 +21,9 @@ const Index = () => {
 
   // Card colors
   const cardColors = [
-    'bg-gradient-to-r from-cyan-50 to-blue-100 border-l-4 border-cyan-400',
-    'bg-gradient-to-r from-emerald-50 to-emerald-100 border-l-4 border-emerald-400',
-    'bg-gradient-to-r from-yellow-50 to-yellow-100 border-l-4 border-yellow-400'
+    'bg-gradient-to-r from-[#ffffff] to-[#D1FFF1] border-l-4 border-[#00AB7D]',
+    'bg-gradient-to-r from-[#ffffff] to-[#D1FFF1] border-l-4 border-[#00AB7D]',
+    'bg-gradient-to-r from-[#ffffff] to-[#D1FFF1] border-l-4 border-[#00AB7D]'
   ];
 
   // Initialize filtered tasks with Ibrahim's tasks
