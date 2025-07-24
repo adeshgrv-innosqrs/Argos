@@ -1,0 +1,205 @@
+import { useState, useEffect } from 'react';
+import Navbar from '../components/Navbar';
+import tasks from '../data/tasks.json';
+import { useNavigate } from 'react-router-dom';
+import { FaSearch, FaChevronDown, FaChevronUp } from 'react-icons/fa';
+
+const Index = () => {
+  const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredTasks, setFilteredTasks] = useState(tasks);
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
+
+  const totalTasks = tasks.length;
+  const completedTasks = tasks.filter(t => t.annotations === 2).length;
+  const tasksLeft = tasks.filter(t => t.annotations !== 2).length;
+  const userCompleted = 3; 
+
+  // Card colors
+  const cardColors = [
+    'bg-gradient-to-r from-blue-50 to-blue-100 border-l-4 border-blue-400',
+    'bg-gradient-to-r from-green-50 to-green-100 border-l-4 border-green-400',
+    'bg-gradient-to-r from-amber-50 to-amber-100 border-l-4 border-amber-400',
+    'bg-gradient-to-r from-purple-50 to-purple-100 border-l-4 border-purple-400'
+  ];
+
+  // Search functionality
+  useEffect(() => {
+    if (!searchTerm) {
+      setFilteredTasks(tasks);
+      return;
+    }
+
+    const term = searchTerm.toLowerCase();
+    const results = tasks.filter(task => {
+      return (
+        String(task.serialNumber).toLowerCase().includes(term) ||
+        task.question.text.toLowerCase().includes(term) ||
+        String(task.annotations).toLowerCase().includes(term) ||
+        task.question.category.toLowerCase().includes(term) ||
+        (task.annotations === 2 ? 'john doe' : '-').includes(term) ||
+        task.completed.toLowerCase().includes(term) ||
+        '2025-07-23'.toLowerCase().includes(term)
+      );
+    });
+    setFilteredTasks(results);
+  }, [searchTerm]);
+
+  // Sorting functionality
+  const requestSort = (key) => {
+    let direction = 'ascending';
+    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const getSortedTasks = () => {
+    const sortableTasks = [...filteredTasks];
+    if (sortConfig.key) {
+      sortableTasks.sort((a, b) => {
+        let aValue, bValue;
+
+        if (sortConfig.key === 'question') {
+          aValue = a.question.text;
+          bValue = b.question.text;
+        } else if (sortConfig.key === 'annotator') {
+          aValue = a.annotations === 2 ? 'John Doe' : '-';
+          bValue = b.annotations === 2 ? 'John Doe' : '-';
+        } else if (sortConfig.key === 'date') {
+          aValue = '2025-07-23';
+          bValue = '2025-07-23';
+        } else {
+          aValue = a[sortConfig.key];
+          bValue = b[sortConfig.key];
+        }
+
+        if (aValue < bValue) {
+          return sortConfig.direction === 'ascending' ? -1 : 1;
+        }
+        if (aValue > bValue) {
+          return sortConfig.direction === 'ascending' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return sortableTasks;
+  };
+
+  const sortedTasks = getSortedTasks();
+
+  return (
+    <div className="bg-[#f5f9fc] min-h-screen">
+      <Navbar active={false} />
+
+      <div className="p-6 space-y-6 max-w-7xl mx-auto">
+        {/* Dashboard Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[['Total Tasks', totalTasks], ['Task Fully Completed', completedTasks], 
+            ['Tasks Left', tasksLeft], ['Your Completed Tasks', userCompleted]].map(([title, count], idx) => (
+            <div key={idx} className={`${cardColors[idx]} p-5 rounded-xl shadow transition-all duration-300 hover:shadow-lg`}>
+              <div className="text-3xl font-bold text-gray-800">{count}</div>
+              <div className="text-md font-semibold text-gray-600 mt-2">{title}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Table Section */}
+        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+          <div className="flex flex-col md:flex-row justify-between items-center p-4 border-b">
+            <h2 className="text-xl font-bold text-gray-800 mb-4 md:mb-0"></h2>
+            <div className="relative w-full md:w-64">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <FaSearch className="text-gray-400" />
+              </div>
+              <input
+                type="text"
+                placeholder="Search tasks..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00ABE4]"
+              />
+            </div>
+          </div>
+          
+          <div className="overflow-x-auto">
+            <table className="min-w-full">
+              <thead className="bg-gradient-to-r from-[#00ABE4] to-[#0077B6] text-white">
+                <tr>
+                  {[
+                    { key: 'serialNumber', label: 'Serial Number' },
+                    { key: 'question', label: 'Question' },
+                    { key: 'annotations', label: 'Annotations' },
+                    { key: 'category', label: 'Category' },
+                    { key: 'annotator', label: 'Annotator' },
+                    { key: 'completed', label: 'Completed' },
+                    { key: 'date', label: 'Date' }
+                  ].map((header) => (
+                    <th 
+                      key={header.key} 
+                      className="px-6 py-4 text-left font-semibold cursor-pointer"
+                      onClick={() => requestSort(header.key)}
+                    >
+                      <div className="flex items-center">
+                        {header.label}
+                        {sortConfig.key === header.key && (
+                          sortConfig.direction === 'ascending' 
+                            ? <FaChevronUp className="ml-1" size={12} /> 
+                            : <FaChevronDown className="ml-1" size={12} />
+                        )}
+                      </div>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {sortedTasks.map((t, i) => (
+                  <tr
+                    key={i}
+                    className="text-sm hover:bg-[#f0f8ff] transition-colors cursor-pointer"
+                    onClick={() => navigate(`/tasks/${t.serialNumber}`)}
+                  >
+                    <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{t.serialNumber}</td>
+                    <td className="px-6 py-4 max-w-xs">{t.question.text}</td>
+                    <td className="px-6 py-4">
+                      {t.annotations === 1 && (
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
+                          Partial
+                        </span>
+                      )}
+                      {t.annotations === 2 && (
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                          Complete
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-md">
+                        {t.question.category}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">{t.annotations === 2 ? 'John Doe' : '-'}</td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center">
+                        <span className="mr-2">{t.completed}</span>
+                        <div className="w-16 bg-gray-200 rounded-full h-1.5">
+                          <div 
+                            className="bg-green-600 h-1.5 rounded-full" 
+                            style={{ width: `${t.annotations === 2 ? '100%' : '50%'}` }}
+                          ></div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">2025-07-23</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Index;
