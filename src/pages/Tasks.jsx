@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
-import SearchEngine from '../components/SearchEngine';
 import QuestionsPanel from '../components/QuestionPanel';
+import SearchEngine from '../components/SearchEngine';
 
 // Mock data - replace with your actual imports
 const tasks = [
@@ -50,7 +50,7 @@ const Timer = () => {
     return (
         <div className="bg-white p-3 rounded shadow text-center">
             <div className="text-sm font-medium text-gray-600">Timer</div>
-            <div className="text-2xl font-bold text-[#00ABE4]">{formatTime(time)}</div>
+            <div className="text-2xl font-bold text-gray-700">{formatTime(time)}</div>
         </div>
     );
 };
@@ -146,7 +146,7 @@ const SubmitSection = ({ locked, onSubmit }) => {
                                 : 'bg-gray-300 cursor-not-allowed'
                             }`}
                     >
-                        {locked ? 'Submit Annotation' : 'Complete All Responses to Submit'}
+                        {locked ? '<Submit></Submit>' : 'Complete All Responses to Submit'}
                     </button>
                     {!locked && (
                         <p className="text-sm text-red-500 mt-2">
@@ -203,7 +203,7 @@ const Tasks = () => {
                 <div className="grid grid-cols-12 gap-5" style={{ minHeight: '600px' }}>
                     
 
-                    <div className="col-span-12 lg:col-span-5">
+                    <div className="col-span-12 lg:col-span-7">
                         <QuestionsPanel
                             answers={answers}
                             setAnswers={setAnswers}
@@ -213,7 +213,7 @@ const Tasks = () => {
                     </div>
 
                     
-                    <div className="col-span-12 lg:col-span-7">
+                    <div className="col-span-12 lg:col-span-5">
                         <SearchEngine query={task.question.text} />
                     </div>
                 </div>

@@ -10,20 +10,17 @@ const Index = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredTasks, setFilteredTasks] = useState(tasks);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
-
   const [statusFilter, setStatusFilter] = useState('All');
 
   const totalTasks = tasks.length;
   const completedTasks = tasks.filter(t => t.annotations === 2).length;
   const tasksLeft = tasks.filter(t => t.annotations !== 2).length;
-  const userCompleted = 3; 
 
   // Card colors
   const cardColors = [
-    'bg-gradient-to-r from-blue-50 to-blue-100 border-l-4 border-blue-400',
-    'bg-gradient-to-r from-green-50 to-green-100 border-l-4 border-green-400',
-    'bg-gradient-to-r from-amber-50 to-amber-100 border-l-4 border-amber-400',
-    'bg-gradient-to-r from-purple-50 to-purple-100 border-l-4 border-purple-400'
+    'bg-gradient-to-r from-cyan-50 to-blue-100 border-l-4 border-cyan-400',
+    'bg-gradient-to-r from-emerald-50 to-emerald-100 border-l-4 border-emerald-400',
+    'bg-gradient-to-r from-yellow-50 to-yellow-100 border-l-4 border-yellow-400'
   ];
 
   // Search functionality
@@ -41,7 +38,6 @@ const Index = () => {
         String(task.annotations).toLowerCase().includes(term) ||
         task.question.category.toLowerCase().includes(term) ||
         (task.annotations === 2 ? 'john doe' : '-').includes(term) ||
-        task.completed.toLowerCase().includes(term) ||
         '2025-07-23'.toLowerCase().includes(term)
       );
     });
@@ -77,20 +73,16 @@ const Index = () => {
           bValue = b[sortConfig.key];
         }
 
-        if (aValue < bValue) {
-          return sortConfig.direction === 'ascending' ? -1 : 1;
-        }
-        if (aValue > bValue) {
-          return sortConfig.direction === 'ascending' ? 1 : -1;
-        }
+        if (aValue < bValue) return sortConfig.direction === 'ascending' ? -1 : 1;
+        if (aValue > bValue) return sortConfig.direction === 'ascending' ? 1 : -1;
         return 0;
       });
     }
     return sortableTasks;
   };
 
-  //filter Logic
-    useEffect(() => {
+  // Filter logic
+  useEffect(() => {
     if (statusFilter === 'All') {
       setFilteredTasks(tasks);
     } else if (statusFilter === 'Completed') {
@@ -108,9 +100,8 @@ const Index = () => {
 
       <div className="p-6 space-y-6 max-w-7xl mx-auto">
         {/* Dashboard Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[['Total Tasks', totalTasks], ['Task Fully Completed', completedTasks], 
-            ['Tasks Left', tasksLeft], ['Your Completed Tasks', userCompleted]].map(([title, count], idx) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {[['Total Tasks', totalTasks], ['Task Completed', completedTasks], ['Tasks Left', tasksLeft]].map(([title, count], idx) => (
             <div key={idx} className={`${cardColors[idx]} p-5 rounded-xl shadow transition-all duration-300 hover:shadow-lg`}>
               <div className="text-3xl font-bold text-gray-800">{count}</div>
               <div className="text-md font-semibold text-gray-600 mt-2">{title}</div>
@@ -121,14 +112,9 @@ const Index = () => {
         {/* Table Section */}
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
           <div className="flex flex-col md:flex-row justify-between items-center p-4 border-b">
-            
-            {/* call Filter  */}
-            <StatusFilter value={statusFilter} onChange={setStatusFilter} /> 
-
-            <h2 className="text-xl font-bold text-gray-800 mb-4 md:mb-0"></h2>
+            <StatusFilter value={statusFilter} onChange={setStatusFilter} />
             <div className="relative w-full md:w-64">
               <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-               
                 <FaSearch className="text-gray-400" />
               </div>
               <input
@@ -140,30 +126,29 @@ const Index = () => {
               />
             </div>
           </div>
-          
+
           <div className="overflow-x-auto">
             <table className="min-w-full">
-              <thead className="bg-gradient-to-r from-[#00ABE4] to-[#0077B6] text-white">
+              <thead className="bg-gradient-to-r from-gray-800 to-[#00AB7D] text-white">
                 <tr>
                   {[
-                    { key: 'serialNumber', label: 'Serial Number' },
+                    { key: 'serialNumber', label: 'Task ID' },
                     { key: 'question', label: 'Question' },
-                    { key: 'annotations', label: 'Annotations' },
+                    { key: 'annotations', label: 'Status' },
                     { key: 'category', label: 'Category' },
-                    { key: 'annotator', label: 'Annotator' },
-                    { key: 'completed', label: 'Completed' },
+                    { key: 'annotator', label: 'Assign By' },
                     { key: 'date', label: 'Date' }
                   ].map((header) => (
-                    <th 
-                      key={header.key} 
+                    <th
+                      key={header.key}
                       className="px-6 py-4 text-left font-semibold cursor-pointer"
                       onClick={() => requestSort(header.key)}
                     >
                       <div className="flex items-center">
                         {header.label}
                         {sortConfig.key === header.key && (
-                          sortConfig.direction === 'ascending' 
-                            ? <FaChevronUp className="ml-1" size={12} /> 
+                          sortConfig.direction === 'ascending'
+                            ? <FaChevronUp className="ml-1" size={12} />
                             : <FaChevronDown className="ml-1" size={12} />
                         )}
                       </div>
@@ -183,7 +168,7 @@ const Index = () => {
                     <td className="px-6 py-4">
                       {t.annotations === 1 && (
                         <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
-                          Partial
+                          Pending
                         </span>
                       )}
                       {t.annotations === 2 && (
@@ -197,18 +182,7 @@ const Index = () => {
                         {t.question.category}
                       </span>
                     </td>
-                    <td className="px-6 py-4">{t.annotations === 2 ? 'John Doe' : '-'}</td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center">
-                        <span className="mr-2">{t.completed}</span>
-                        <div className="w-16 bg-gray-200 rounded-full h-1.5">
-                          <div 
-                            className="bg-green-600 h-1.5 rounded-full" 
-                            style={{ width: `${t.annotations === 2 ? '100%' : '50%'}` }}
-                          ></div>
-                        </div>
-                      </div>
-                    </td>
+                    <td className="px-6 py-4">{t.annotations === 2 ? 'Charle Haris' : '-'}</td>
                     <td className="px-6 py-4">2025-07-23</td>
                   </tr>
                 ))}
