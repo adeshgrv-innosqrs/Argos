@@ -1,8 +1,9 @@
+// App.jsx
 import { Routes, Route } from 'react-router-dom';
 import Login from './pages/Login';
-import Index from './pages/Index';
 import Tasks from './pages/Tasks';
 import ProtectedRoute from './routes/ProtectedRoute';
+import DynamicIndexRoute from './routes/DynamicIndexRoute';
 import { AuthProvider } from './context/AuthContext';
 
 function App() {
@@ -14,13 +15,12 @@ function App() {
           path="/index"
           element={
             <ProtectedRoute>
-              <Index />
+              <DynamicIndexRoute />
             </ProtectedRoute>
           }
         />
         <Route
           path="/tasks/:serialNumber"
-          
           element={
             <ProtectedRoute>
               <Tasks />

@@ -16,10 +16,7 @@ const Login = () => {
       setError('All fields are required');
       return;
     }
-    if (role !== 'annotator') {
-      setError('Only Annotator login is enabled');
-      return;
-    }
+   
 
     setError('');
     login({ username, role });
@@ -47,8 +44,7 @@ const Login = () => {
             >
               <option value="">Choose your role</option>
               <option value="annotator">Annotator</option>
-              <option value="reviewer">Reviewer</option>
-              <option value="admin">Admin</option>
+              <option value="pm">PM</option>
             </select>
           </div>
 
