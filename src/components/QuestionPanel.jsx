@@ -81,25 +81,25 @@ const QuestionsPanel = ({ answers, setAnswers, locked, setLocked }) => {
         ))}
       </div>
 
-      <div className="mt-6 pt-4 border-t">
-        <label className="flex items-center space-x-3">
-          <input
+      {/* <div className="mt-6 pt-4 border-t">
+        <label className="flex items-center space-x-3"> */}
+          {/* <input
             type="checkbox"
             checked={locked}
             onChange={(e) => setLocked(e.target.checked)}
             disabled={!allAnswered}
-            className="w-5 h-5 text-[#00ABE4] rounded focus:ring-[#00ABE4]"
-          />
-          <span className="font-semibold text-gray-800">
+            className="w-5 h-5 text-[#00ABE4] rounded focus:ring-[#00ABE4]" */}
+          {/* /> */}
+          {/* <span className="font-semibold text-gray-800">
             Save your answers {!allAnswered && <span className="text-red-500">*</span>}
-          </span>
-        </label>
-        {!allAnswered && (
+          </span> */}
+        {/* </label> */}
+        {/* {!allAnswered && (
           <p className="text-sm text-red-500 mt-2 ml-8">
             Please answer all questions and provide remarks before locking.
           </p>
-        )}
-      </div>
+        )} */}
+      {/* </div> */}
     </div>
   );
 };
