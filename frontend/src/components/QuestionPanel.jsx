@@ -1,3 +1,6 @@
+// QuestionsPanel.jsx (or QuestionPanel.jsx)
+import { useState } from 'react';
+
 const QuestionsPanel = ({ answers, setAnswers, locked, setLocked }) => {
   const questions = [
     { id: 'intelligible', text: 'Is the query intelligible?' },
@@ -22,12 +25,33 @@ const QuestionsPanel = ({ answers, setAnswers, locked, setLocked }) => {
     answers[q.id]?.answer && answers[q.id]?.remark?.trim()
   );
 
+  const handleLockToggle = () => {
+    if (!allAnswered && !locked) {
+      alert('Please answer all questions before locking your responses.');
+      return;
+    }
+    setLocked(!locked);
+  };
+
   return (
     <div className="bg-white p-6 rounded shadow h-full">
-      <div className="mb-4">
-        <h3 className="font-bold text-lg text-gray-800 bg-[#E9F1FA] p-3 rounded">
+      <div className="mb-4 flex justify-between items-center">
+        <h3 className="font-bold text-lg text-gray-800 bg-[#E9F1FA] p-3 rounded flex-1">
           Conversation History
         </h3>
+        <button
+          onClick={handleLockToggle}
+          disabled={!allAnswered && !locked}
+          className={`ml-4 px-4 py-2 rounded-md font-semibold transition-colors ${
+            locked
+              ? 'bg-red-500 text-white hover:bg-red-600'
+              : allAnswered
+              ? 'bg-[#00ABE4] text-white hover:bg-[#008ec2]'
+              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+          }`}
+        >
+          {locked ? 'Unlock' : 'Lock Answers'}
+        </button>
       </div>
 
       <div className="space-y-6 max-h-96 overflow-y-auto">
@@ -79,26 +103,6 @@ const QuestionsPanel = ({ answers, setAnswers, locked, setLocked }) => {
             </div>
           </div>
         ))}
-      </div>
-
-      <div className="mt-6 pt-4 border-t">
-        {/* <label className="flex items-center space-x-3">           { <input
-            type="checkbox"
-            checked={locked}
-            onChange={(e) => setLocked(e.target.checked)}
-            disabled={!allAnswered}
-            className="w-5 h-5 text-[#00ABE4] rounded focus:ring-[#00ABE4]"
-          
-           /> }
-          <span className="font-semibold text-gray-800">
-            Save your answers {!allAnswered && <span className="text-red-500">*</span>}
-          </span>
-        </label>
-        {!allAnswered && (
-          <p className="text-sm text-red-500 mt-2 ml-8">
-            Please answer all questions and provide remarks before locking.
-          </p>
-        )} */}
       </div>
     </div>
   );

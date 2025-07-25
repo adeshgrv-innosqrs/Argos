@@ -10,7 +10,6 @@ const SearchEngine = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      // In a real implementation, this would perform the search
       console.log('Searching for:', searchQuery);
     }
   };
