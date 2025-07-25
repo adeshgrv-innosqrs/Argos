@@ -82,7 +82,7 @@ const QuestionsPanel = ({ answers, setAnswers, locked, setLocked }) => {
       </div>
 
       <div className="mt-6 pt-4 border-t">
-        <label className="flex items-center space-x-3">           { <input
+        {/* <label className="flex items-center space-x-3">           { <input
             type="checkbox"
             checked={locked}
             onChange={(e) => setLocked(e.target.checked)}
@@ -98,7 +98,7 @@ const QuestionsPanel = ({ answers, setAnswers, locked, setLocked }) => {
           <p className="text-sm text-red-500 mt-2 ml-8">
             Please answer all questions and provide remarks before locking.
           </p>
-        )}
+        )} */}
       </div>
     </div>
   );
