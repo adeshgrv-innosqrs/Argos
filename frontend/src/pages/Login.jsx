@@ -16,7 +16,6 @@ const Login = () => {
       setError('All fields are required');
       return;
     }
-   
 
     setError('');
     login({ username, role });
@@ -24,9 +23,24 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#E9F1FA] p-4">
-      <div className="bg-white shadow-xl rounded-xl p-8 w-full max-w-md">
-        <h2 className="text-3xl font-bold text-center bg-gradient-to-r from-[#008B65] via-[#BDE648] to-[#F0F0F0] bg-clip-text text-transparent mb-8">Argos Login</h2>
+    <div
+      className="min-h-screen flex items-center justify-center bg-cover bg-center p-4"
+      style={{
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><rect fill="%23059669" width="1200" height="800"/><g fill-opacity="0.1"><polygon fill="%23ffffff" points="1200,160 0,360 0,800 1200,800"/><polygon fill="%23ffffff" points="1200,0 0,200 0,640 1200,440"/></g></svg>')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}
+    >
+      <div className="bg-white shadow-xl rounded-xl p-8 w-full max-w-md bg-opacity-90">
+        <div className="flex justify-center mb-6">
+          <img src="/Logo.png" alt="Argos Logo" className="h-16 w-auto" />
+        </div>
+
+        <h2 className="text-4xl leading-tight font-bold text-center bg-gradient-to-r from-green-600 via-green-500 to-emerald-600 bg-clip-text text-transparent mb-5">
+  Welcome to Argos
+</h2>
+
 
         {error && (
           <div className="mb-6 p-3 bg-red-50 text-red-500 rounded-lg text-center border border-red-200">
@@ -74,7 +88,7 @@ const Login = () => {
 
           <button
             onClick={handleLogin}
-            className="w-full bg-green-600 py-3 rounded-lg font-semibold  transition duration-300 shadow-md hover:shadow-lg"
+            className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold transition duration-300 shadow-md hover:shadow-lg"
           >
             Login
           </button>

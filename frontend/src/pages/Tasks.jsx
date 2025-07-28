@@ -55,7 +55,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message }) => {
 // Enhanced Notification Component
 const Notification = ({ message, type = 'error', onClose }) => {
   if (!message) return null;
-
+  
   const getNotificationStyles = () => {
     switch (type) {
       case 'success':
@@ -140,21 +140,21 @@ const SubmitSection = ({ locked, onSubmit }) => {
   const handleConfirmSubmit = async () => {
     setShowConfirmation(false);
     setIsSubmitting(true);
-
+    
     // Simulate API call
     await new Promise(r => setTimeout(r, 2000));
-
+    
     setIsSubmitting(false);
-    setNotification({
-      message: '✅ Your answers have been submitted successfully!',
-      type: 'success'
+    setNotification({ 
+      message: '✅ Your answers have been submitted successfully!', 
+      type: 'success' 
     });
-
+    
     // Auto-hide notification after 5 seconds
     setTimeout(() => {
       setNotification({ message: '', type: '' });
     }, 5000);
-
+    
     onSubmit();
   };
 
@@ -168,12 +168,12 @@ const SubmitSection = ({ locked, onSubmit }) => {
 
   return (
     <div className="bg-white p-6 rounded shadow text-center">
-      <Notification
-        message={notification.message}
+      <Notification 
+        message={notification.message} 
         type={notification.type}
         onClose={clearNotification}
       />
-
+      
       {isSubmitting ? (
         <div className="flex items-center justify-center space-x-3">
           <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#00ABE4]"></div>
@@ -184,10 +184,11 @@ const SubmitSection = ({ locked, onSubmit }) => {
           <button
             disabled={!locked}
             onClick={handleSubmitClick}
-            className={`px-8 py-3 rounded-md text-white font-semibold text-lg transition-colors ${locked
-                ? 'bg-[#00ABE4] hover:bg-[#0093c4]'
+            className={`px-8 py-3 rounded-md text-white font-semibold text-lg transition-colors ${
+              locked 
+                ? 'bg-[#00ABE4] hover:bg-[#0093c4]' 
                 : 'bg-gray-300 cursor-not-allowed'
-              }`}
+            }`}
           >
             {locked ? 'Submit' : 'Complete All Responses to Submit'}
           </button>
@@ -266,15 +267,9 @@ const Tasks = () => {
           disableNext={currentIndex >= filteredTasks.length - 1}
         />
         <div className="grid grid-cols-12 gap-5" style={{ minHeight: '600px' }}>
-          <div className="col-span-12 lg:col-span-7 ">
-            <QuestionsPanel
-              answers={answers}
-              setAnswers={setAnswers}
-              locked={locked}
-              setLocked={setLocked}
-            />
+          <div className="col-span-12 lg:col-span-7">
+            <QuestionsPanel answers={answers} setAnswers={setAnswers} locked={locked} setLocked={setLocked} />
           </div>
-
           <div className="col-span-12 lg:col-span-5">
             <SearchEngine query={task.question.text} />
           </div>
