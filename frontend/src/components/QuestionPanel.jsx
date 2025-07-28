@@ -1,5 +1,3 @@
-// QuestionsPanel.jsx (or QuestionPanel.jsx)
-import { useState } from 'react';
 
 const QuestionsPanel = ({ answers, setAnswers, locked, setLocked }) => {
   const questions = [
@@ -34,7 +32,7 @@ const QuestionsPanel = ({ answers, setAnswers, locked, setLocked }) => {
   };
 
   return (
-    <div className="bg-white p-6 rounded shadow h-full">
+    <div className="bg-white p-6 rounded shadow h-full flex flex-col">
       <div className="mb-4 flex justify-between items-center">
         <h3 className="font-bold text-lg text-gray-800 bg-[#E9F1FA] p-3 rounded flex-1">
           Conversation History
@@ -54,7 +52,7 @@ const QuestionsPanel = ({ answers, setAnswers, locked, setLocked }) => {
         </button>
       </div>
 
-      <div className="space-y-6 max-h-96 overflow-y-auto">
+      <div className="space-y-6 flex-1 overflow-y-auto pr-2">
         {questions.map((question) => (
           <div key={question.id} className="border-b pb-4">
             <p className="font-bold text-gray-800 mb-3">{question.text}</p>
