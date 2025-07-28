@@ -19,7 +19,13 @@ const Login = () => {
 
     setError('');
     login({ username, role });
-    navigate('/index');
+
+    if(role=='annotator'){
+      navigate('/index');
+    }else if(role=='pm'){
+      navigate('/projects');
+    }
+    
   };
 
   return (
@@ -38,8 +44,8 @@ const Login = () => {
         </div>
 
         <h2 className="text-4xl leading-tight font-bold text-center bg-gradient-to-r from-green-600 via-green-500 to-emerald-600 bg-clip-text text-transparent mb-5">
-  Welcome to Argos
-</h2>
+          Welcome to Argos
+        </h2>
 
 
         {error && (
@@ -59,6 +65,7 @@ const Login = () => {
               <option value="">Choose your role</option>
               <option value="annotator">Annotator</option>
               <option value="pm">PM</option>
+              <option value="reviewer">Reviewer</option>
             </select>
           </div>
 
