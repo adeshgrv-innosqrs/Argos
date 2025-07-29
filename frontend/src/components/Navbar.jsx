@@ -1,17 +1,31 @@
 import { Activity, CircleUserRound, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Logo from '../assets/Logo.png';
+import { useAuth } from '../context/AuthContext';
+
 const Navbar = () => {
 
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const handleLogoClick = () => {
+    if (user?.role === 'annotator') {
+      navigate('/index');
+    } else if (user?.role === 'pm') {
+      navigate('/projects');
+    } else if (user?.role === 'adjudicater') {
+      navigate('/'); 
+    } else {
+      navigate('/');
+    }
+  };
 
 
   return (
     <div className="flex justify-between items-center px-6 py-3 bg-gradient-to-r from-gray-800 to-[#00AB7D] shadow-md">
       <div
       className="flex items-center gap-2 text-[#00ABE4] font-bold text-xl cursor-pointer"
-     // onClick={() => navigate('/index')} // Navigates to /index on click
-    >
+      onClick={handleLogoClick}    >
        <img src={Logo} alt="Argos Logo" className="h-8 w-auto" />
       
     </div>

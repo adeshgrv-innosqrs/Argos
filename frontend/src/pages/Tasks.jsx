@@ -182,7 +182,7 @@ const Tasks = () => {
 
   const goToTask = (index) => {
     if (index >= 0 && index < filteredTasks.length) {
-      setTime(0); // Reset timer on task change
+      setTime(0); 
       navigate(`/tasks/${filteredTasks[index].serialNumber}`);
     }
   };
