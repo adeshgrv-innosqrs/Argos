@@ -7,7 +7,7 @@ import QuestionsPanel from '../components/QuestionPanel';
 import SearchEngine from '../components/SearchEngine';
 import allTasks from '../data/tasks.json';
 
-// Confirmation Modal Component
+
 const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message }) => {
   if (!isOpen) return null;
 
@@ -74,25 +74,34 @@ const Notification = ({ message, type = 'error', onClose }) => {
   );
 };
 
-const Timer = ({ time }) => {
+const Timer = ({ time, isActive }) => {
   const formatTime = (s) => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+  
   return (
-    <div className="bg-white p-3 rounded shadow text-center">
+    <div className={`p-3 rounded shadow text-center transition-colors ${
+      isActive ? 'bg-green-100' : 'bg-red-100'
+    }`}>
       <div className="text-sm font-medium text-gray-600">Timer</div>
-      <div className="text-2xl font-bold text-gray-700">{formatTime(time)}</div>
+      <div className={`text-2xl font-bold ${
+        isActive ? 'text-green-700' : 'text-red-700'
+      }`}>
+        {formatTime(time)}
+      </div>
+      {!isActive && (
+        <div className="text-xs text-red-600 mt-1">Paused - Move cursor to resume</div>
+      )}
     </div>
   );
 };
 
-const InfoPanel = ({ question, category, onShowInstructions, onPrev, onNext, disablePrev, disableNext, time }) => (
+const InfoPanel = ({ question, category, onShowInstructions, onPrev, onNext, disablePrev, disableNext, time, isTimerActive }) => (
   <div className="bg-white p-4 rounded shadow">
     <div className="flex items-start justify-between">
-      <Timer time={time} />
+      <Timer time={time} isActive={isTimerActive} />
       <div className="flex-1 text-center px-4">
         <h1 className="text-xl font-bold text-gray-800">{question}</h1>
       </div>
       <div className="flex flex-col items-end space-y-2">
-        <div className="bg-[#E0FFE0] px-2 py-1 rounded text-xs font-semibold text-black">Category: {category}</div>
         <button onClick={onShowInstructions} className="text-xs font-semibold bg-[#E0FFE0] px-3 py-1 rounded-full shadow">Show Instructions</button>
         <div className="flex space-x-1 pt-2">
           <button onClick={onPrev} disabled={disablePrev} className="p-1 rounded-full bg-[#E9F1FA] hover:bg-[#00ABE4] hover:text-white disabled:opacity-50">
@@ -111,13 +120,13 @@ const InfoPanel = ({ question, category, onShowInstructions, onPrev, onNext, dis
   </div>
 );
 
-const SubmitSection = ({ locked, onSubmit }) => {
+const SubmitSection = ({ canSubmit, onSubmit }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [notification, setNotification] = useState({ message: '', type: '' });
 
   const handleSubmitClick = () => {
-    if (!locked) return;
+    if (!canSubmit) return;
     setShowConfirmation(true);
   };
 
@@ -145,15 +154,15 @@ const SubmitSection = ({ locked, onSubmit }) => {
       ) : (
         <>
           <button
-            disabled={!locked}
+            disabled={!canSubmit}
             onClick={handleSubmitClick}
             className={`px-8 py-3 rounded-md text-white font-semibold text-lg transition-colors ${
-              locked ? 'bg-[#00ABE4] hover:bg-[#0093c4]' : 'bg-gray-300 cursor-not-allowed'
+              canSubmit ? 'bg-green-600 hover:bg-green-400' : 'bg-gray-300 cursor-not-allowed'
             }`}
           >
-            {locked ? 'Submit' : 'Complete All Responses to Submit'}
+            {canSubmit ? 'Submit' : 'Complete All Responses to Submit'}
           </button>
-          {!locked && <p className="text-sm text-red-500 mt-2">Please answer all questions and lock your responses before submitting.</p>}
+          {!canSubmit && <p className="text-sm text-red-500 mt-2">Please answer all questions before submitting.</p>}
         </>
       )}
       <ConfirmationModal
@@ -173,12 +182,15 @@ const Tasks = () => {
   const annotator = 'Ibrahim';
   const filteredTasks = allTasks.filter(t => t.annotator === annotator);
   const [answers, setAnswers] = useState({});
-  const [locked, setLocked] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
   const [time, setTime] = useState(0);
+  const [isTimerActive, setIsTimerActive] = useState(true);
+  const [lastMouseMove, setLastMouseMove] = useState(Date.now());
 
   const currentIndex = filteredTasks.findIndex(t => t.serialNumber === serialNumber);
   const task = filteredTasks[currentIndex];
+
+  const canSubmit = Object.keys(answers).length > 0; 
 
   const goToTask = (index) => {
     if (index >= 0 && index < filteredTasks.length) {
@@ -190,13 +202,37 @@ const Tasks = () => {
   const handleSubmit = () => {
     console.log('Annotation submitted successfully with answers:', answers);
     setAnswers({});
-    setLocked(false);
   };
 
+  // Mouse movement tracking
   useEffect(() => {
-    const interval = setInterval(() => setTime(prev => prev + 1), 1000);
+    const handleMouseMove = () => {
+      setLastMouseMove(Date.now());
+      if (!isTimerActive) {
+        setIsTimerActive(true);
+      }
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    return () => document.removeEventListener('mousemove', handleMouseMove);
+  }, [isTimerActive]);
+
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = Date.now();
+      const timeSinceLastMove = now - lastMouseMove;
+      
+      if (timeSinceLastMove >= 60000) {
+        setIsTimerActive(false);
+      } else {
+        setIsTimerActive(true);
+        setTime(prev => prev + 1);
+      }
+    }, 1000);
+
     return () => clearInterval(interval);
-  }, []);
+  }, [lastMouseMove]);
 
   useEffect(() => {
     if (!serialNumber && filteredTasks.length > 0) {
@@ -217,7 +253,7 @@ const Tasks = () => {
 
   return (
     <div className="bg-[#E9F1FA] min-h-screen">
-      <Navbar active={true} />
+      <Navbar active={isTimerActive} />
       <div className="p-6 space-y-6">
         <InfoPanel
           question={task.question.text}
@@ -228,11 +264,17 @@ const Tasks = () => {
           disablePrev={currentIndex <= 0}
           disableNext={currentIndex >= filteredTasks.length - 1}
           time={time}
+          isTimerActive={isTimerActive}
         />
         <div className="grid grid-cols-12 gap-5 min-h-[600px]">
           <div className="col-span-12 lg:col-span-7">
             <div className="h-full bg-white rounded p-4 shadow overflow-y-auto">
-              <QuestionsPanel answers={answers} setAnswers={setAnswers} locked={locked} setLocked={setLocked} />
+              <QuestionsPanel 
+                answers={answers} 
+                setAnswers={setAnswers} 
+                locked={false} 
+                setLocked={() => {}} 
+              />
             </div>
           </div>
           <div className="col-span-12 lg:col-span-5">
@@ -241,7 +283,7 @@ const Tasks = () => {
             </div>
           </div>
         </div>
-        <SubmitSection locked={locked} onSubmit={handleSubmit} />
+        <SubmitSection canSubmit={canSubmit} onSubmit={handleSubmit} />
       </div>
       {showGuide && <InstructionGuide onClose={() => setShowGuide(false)} />}
     </div>

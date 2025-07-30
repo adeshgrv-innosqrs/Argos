@@ -31,11 +31,13 @@ const Login = () => {
     setError('');
     login({ username, role });
 
-    // if(role=='annotator'){
-    //   navigate('/index');
-    // }else if(role=='pm'){
-    //   navigate('/projects');
-    // }
+    if(role=='annotator'){
+      navigate('/index');
+    }else if(role=='pm'){
+      navigate('/projects');
+    }else if(role=='adjudicator'){
+      navigate('/review-tasks');   
+    }
     
   };
 
@@ -75,8 +77,9 @@ const Login = () => {
             >
               <option value="">Choose your role</option>
               <option value="annotator">Annotator</option>
+              <option value="adjudicator">Adjudicator</option>
               <option value="pm">PM</option>
-              <option value="adjudicator">Reviewer</option>
+              
             </select>
           </div>
 

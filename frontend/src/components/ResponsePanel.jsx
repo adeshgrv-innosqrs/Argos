@@ -55,7 +55,7 @@ const ResponsePanel = ({ answers, setAnswers }) => {
 
       <div className="space-y-6 flex-1 overflow-y-auto pr-2">
         {questions.map((question) => (
-          <div key={question.id} className="border-b pb-4">
+          <div key={question.id} className=" pb-4">
             <p className="font-bold text-gray-800 mb-3">{question.text}</p>
 
             <div className="space-y-3">

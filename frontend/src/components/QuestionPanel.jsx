@@ -38,7 +38,7 @@ const QuestionsPanel = ({ answers, setAnswers, locked, setLocked }) => {
         <h3 className="font-bold text-lg text-gray-800 bg-[#E9F1FA] p-3 rounded flex-1">
           Conversation History
         </h3>
-        <button
+        {/* <button
           onClick={handleLockToggle}
           disabled={!allAnswered && !locked}
           className={`ml-4 px-4 py-2 rounded-md font-semibold transition-colors ${
@@ -50,12 +50,12 @@ const QuestionsPanel = ({ answers, setAnswers, locked, setLocked }) => {
           }`}
         >
           {locked ? 'Unlock' : 'Lock Answers'}
-        </button>
+        </button> */}
       </div>
 
       <div className="space-y-6 flex-1 overflow-y-auto pr-2">
         {questions.map((question) => (
-          <div key={question.id} className="border-b pb-4">
+          <div key={question.id} className="pb-2">
             <p className="font-bold text-gray-800 mb-3">{question.text}</p>
 
             <div className="space-y-3">
