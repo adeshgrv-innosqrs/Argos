@@ -1,12 +1,14 @@
-import { useState } from 'react';
-import { FaTimes, FaUpload, FaFile } from 'react-icons/fa';
+import { useState } from "react";
+import { FaTimes, FaUpload, FaFile } from "react-icons/fa";
+import JSZip from "jszip";
+import axios from "axios";
 
 const AddProject = ({ isOpen, onClose }) => {
   const [dragActive, setDragActive] = useState(false);
   const [projectFile, setProjectFile] = useState(null);
   const [vendorFile, setVendorFile] = useState(null);
-  const [view, setView] = useState('project'); // "project" or "vendor"
-  const [projectName, setProjectName] = useState('');
+  const [view, setView] = useState("project"); // "project" or "vendor"
+  const [projectName, setProjectName] = useState("");
 
   const handleDrag = (e) => {
     e.preventDefault();
@@ -23,70 +25,172 @@ const AddProject = ({ isOpen, onClose }) => {
     const file = e.dataTransfer.files?.[0];
     if (!file) return;
 
-    if (view === 'project') {
-      if (file.name.endsWith('.zip')) setProjectFile(file);
-      else alert('Please select a ZIP file');
+    if (view === "project") {
+      if (file.name.endsWith(".zip")) setProjectFile(file);
+      else alert("Please select a ZIP file");
     } else {
-      if (file.name.endsWith('.json')) setVendorFile(file);
-      else alert('Please select a JSON file');
+      if (file.name.endsWith(".json")) setVendorFile(file);
+      else alert("Please select a JSON file");
     }
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (view === 'project') {
-      if (file.name.endsWith('.zip')) setProjectFile(file);
-      else alert('Please select a ZIP file');
-    } else {
-      if (file.name.endsWith('.csv')) setVendorFile(file);
-      else alert('Please select a CSV file');
-    }
-  };
-
-  const handleUpload = () => {
-
-    if (view === 'vendor') {
-      if (vendorFile) {
-        alert(`Project "${projectName}" with vendor list uploaded successfully!`);
-        handleClose();
+    if (view === "project") {
+      if (file.name.endsWith(".json")) {
+        setProjectFile(file);
       } else {
-        alert('Please upload a vendor JSON file first.');
+        alert("Please select a JSON file");
+      }
+    } else {
+      if (file.name.endsWith(".zip")) {
+        try {
+          const zip = await JSZip.loadAsync(file);
+          const hasCSV = Object.keys(zip.files).some((fileName) =>
+            fileName.endsWith(".csv")
+          );
+
+          if (hasCSV) {
+            setVendorFile(file);
+          } else {
+            alert("Zip file does not contain any CSV file.");
+          }
+        } catch (err) {
+          console.error("Error reading zip file:", err);
+          alert("Failed to read the ZIP file.");
+        }
+      } else {
+        alert("Please select a ZIP file.");
       }
     }
-
-    if (view === 'project' && projectFile && projectName.trim()) {
-      alert(`Project "${projectName}" uploaded successfully!`);
-      setProjectFile(null);
-      setProjectName('');
-      onClose();
-    }
-
-    // Inside handleFileChange
-    if (view === 'project') {
-      if (file.name.endsWith('.zip')) setProjectFile(file);
-      else alert('Please select a ZIP file');
-    } else {
-      if (file.name.endsWith('.json')) setVendorFile(file);
-      else alert('Please select a JSON file');
-    }
   };
+
+  // const handleFileChange = (e) => {
+  //   const file = e.target.files?.[0];
+  //   if (!file) return;
+
+  //   if (view === 'project') {
+  //     if (file.name.endsWith('.json')) setProjectFile(file);
+  //     else alert('Please select a ZIP file');
+  //   } else {
+  //     if (file.name.endsWith('.zip')) setVendorFile(file);
+  //     else alert('Please select a CSV file');
+  //   }
+  // };
+
+  // const handleUpload = () => {
+  //   if (view === "vendor") {
+  //     if (vendorFile) {
+  //       // alert(
+  //       //   `Project "${projectName}" with vendor list uploaded successfully!`
+  //       // );
+
+  //       // Changes is here ,
+  //       // make api call , shoud include , jwt, both file, name , etc
+        
+  //       handleClose();
+  //     } else {
+  //       alert("Please upload a vendor JSON file first.");
+  //     }
+  //   }
+
+  //   if (view === "project" && projectFile && projectName.trim()) {
+  //     alert(`Project "${projectName}" uploaded successfully!`);
+  //     setProjectFile(null);
+  //     setProjectName("");
+  //     onClose();
+  //   }
+
+  //   // Inside handleFileChange
+  //   if (view === "project") {
+  //     if (file.name.endsWith(".zip")) setProjectFile(file);
+  //     else alert("Please select a ZIP file");
+  //   } else {
+  //     if (file.name.endsWith(".json")) setVendorFile(file);
+  //     else alert("Please select a JSON file");
+  //   }
+  // };
+
+  const handleUpload = async () => {
+  if (!projectName.trim()) {
+    return alert("Please enter a project name.");
+  }
+
+  // Prepare form data
+  const formData = new FormData();
+  formData.append("project_name", projectName);
+
+  if (projectFile) {
+    formData.append("project_file", projectFile); // Project JSON
+  }
+
+  if (vendorFile) {
+    formData.append("vendor_file", vendorFile); // Vendor ZIP
+  }
+
+  try {
+    // Get JWT token (assuming stored in localStorage)
+    const token = localStorage.getItem("token");
+
+    // project data upload
+    // const response = await axios.post(
+    //   "/api/projects/upload/",
+    //   formData,
+    //   {
+    //     headers: {
+    //       Authorization: `Bearer ${token}`,
+    //       "Content-Type": "multipart/form-data",
+    //     },
+    //   }
+    // );
+
+    // alert("Project and vendor list uploaded successfully!");
+    // console.log("Upload response:", response.data);
+
+
+    // vendor data upload 
+
+    
+    const response = await axios.post(
+      "/api/projects/upload/",
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    alert("Project and vendor list uploaded successfully!");
+    console.log("Upload response:", response.data);
+
+    // Reset state and close modal
+    setProjectFile(null);
+    setVendorFile(null);
+    setProjectName("");
+    onClose();
+  } catch (error) {
+    console.error("Upload failed:", error.response || error);
+    alert("Failed to upload project and vendor list. Please try again.");
+  }
+};
+
 
   const handleNext = () => {
     if (!projectName.trim()) return alert("Please enter a project name.");
     if (!projectFile) return alert("Please upload a ZIP file for the project.");
-    setView('vendor');
+    setView("vendor");
   };
-  
-
 
   const handleClose = () => {
     setProjectFile(null);
     setVendorFile(null);
-    setProjectName('');
+    setProjectName("");
     setDragActive(false);
-    setView('project');
+    setView("project");
     onClose();
   };
 
@@ -98,7 +202,10 @@ const AddProject = ({ isOpen, onClose }) => {
         {/* Header */}
         <div className="flex justify-between items-center p-6 border-b">
           <h2 className="text-xl font-bold text-gray-800">Add New Project</h2>
-          <button onClick={handleClose} className="text-gray-400 hover:text-gray-600 transition-colors">
+          <button
+            onClick={handleClose}
+            className="text-gray-400 hover:text-gray-600 transition-colors"
+          >
             <FaTimes size={20} />
           </button>
         </div>
@@ -106,20 +213,22 @@ const AddProject = ({ isOpen, onClose }) => {
         {/* Toggle Buttons */}
         <div className="flex justify-center gap-2 p-4 border-b">
           <button
-            className={`w-1/2 px-4 py-2 rounded-full text-sm font-semibold border transition ${view === 'project'
-              ? 'bg-green-100 text-green-800 border-green-300'
-              : 'bg-gray-100 text-gray-600 border-gray-200'
-              }`}
-            onClick={() => setView('project')}
+            className={`w-1/2 px-4 py-2 rounded-full text-sm font-semibold border transition ${
+              view === "project"
+                ? "bg-green-100 text-green-800 border-green-300"
+                : "bg-gray-100 text-gray-600 border-gray-200"
+            }`}
+            onClick={() => setView("project")}
           >
             Add Project
           </button>
           <button
-            className={`w-1/2 px-4 py-2 rounded-full text-sm font-semibold border transition ${view === 'vendor'
-              ? 'bg-green-100 text-green-800 border-green-300'
-              : 'bg-gray-100 text-gray-600 border-gray-200'
-              }`}
-            onClick={() => setView('vendor')}
+            className={`w-1/2 px-4 py-2 rounded-full text-sm font-semibold border transition ${
+              view === "vendor"
+                ? "bg-green-100 text-green-800 border-green-300"
+                : "bg-gray-100 text-gray-600 border-gray-200"
+            }`}
+            onClick={() => setView("vendor")}
           >
             Upload Vendors List
           </button>
@@ -127,9 +236,11 @@ const AddProject = ({ isOpen, onClose }) => {
 
         {/* Body */}
         <div className="p-6">
-          {view === 'project' ? (
+          {view === "project" ? (
             <>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Project Name</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Project Name
+              </label>
               <input
                 type="text"
                 value={projectName}
@@ -140,26 +251,34 @@ const AddProject = ({ isOpen, onClose }) => {
 
               {/* Project File Upload */}
               <div
-                className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-colors ${dragActive ? 'border-green-400 bg-green-50' : 'border-gray-300 hover:border-gray-400'
-                  }`}
+                className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+                  dragActive
+                    ? "border-green-400 bg-green-50"
+                    : "border-gray-300 hover:border-gray-400"
+                }`}
                 onDragEnter={handleDrag}
                 onDragLeave={handleDrag}
                 onDragOver={handleDrag}
                 onDrop={handleDrop}
               >
+                {/* <kujyhju */}
                 <input
                   type="file"
-                  accept=".zip"
+                  accept=".json,application/json"
                   onChange={handleFileChange}
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                 />
                 <div className="flex flex-col items-center">
                   <FaUpload className="text-4xl text-gray-400 mb-4" />
                   <p className="text-gray-600 mb-2">
-                    Drag and drop your .zip file here, or{' '}
-                    <span className="text-green-600 font-semibold">click to browse</span>
+                    Drag and drop your .json file here, or{" "}
+                    <span className="text-green-600 font-semibold">
+                      click to browse
+                    </span>
                   </p>
-                  <p className="text-sm text-gray-400">Only .zip files are supported</p>
+                  <p className="text-sm text-gray-400">
+                    Only .json files are supported
+                  </p>
                 </div>
               </div>
 
@@ -169,7 +288,9 @@ const AddProject = ({ isOpen, onClose }) => {
                   <div className="flex items-center">
                     <FaFile className="text-green-600 mr-3" />
                     <div>
-                      <p className="font-medium text-gray-800">{projectFile.name}</p>
+                      <p className="font-medium text-gray-800">
+                        {projectFile.name}
+                      </p>
                       <p className="text-sm text-gray-500">
                         {(projectFile.size / 1024).toFixed(1)} KB
                       </p>
@@ -188,8 +309,11 @@ const AddProject = ({ isOpen, onClose }) => {
             <>
               {/* Vendors File Upload */}
               <div
-                className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-colors ${dragActive ? 'border-green-400 bg-green-50' : 'border-gray-300 hover:border-gray-400'
-                  }`}
+                className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+                  dragActive
+                    ? "border-green-400 bg-green-50"
+                    : "border-gray-300 hover:border-gray-400"
+                }`}
                 onDragEnter={handleDrag}
                 onDragLeave={handleDrag}
                 onDragOver={handleDrag}
@@ -197,18 +321,21 @@ const AddProject = ({ isOpen, onClose }) => {
               >
                 <input
                   type="file"
-                  accept=".json,application/json"
+                  accept=".zip"
                   onChange={handleFileChange}
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                 />
                 <div className="flex flex-col items-center">
                   <FaUpload className="text-4xl text-gray-400 mb-4" />
                   <p className="text-gray-600 mb-2">
-                    Drag and drop your JSON file here, or{' '}
-                    <span className="text-green-600 font-semibold">click to browse</span>
+                    Drag and drop your Zip file here, or{" "}
+                    <span className="text-green-600 font-semibold">
+                      click to browse
+                    </span>
                   </p>
                   <p className="text-sm text-gray-400">
-                    Upload a JSON file containing vendor names and email addresses
+                    Upload a Zip file containing csv file with vendor names and
+                    email addresses
                   </p>
                 </div>
               </div>
@@ -219,7 +346,9 @@ const AddProject = ({ isOpen, onClose }) => {
                   <div className="flex items-center">
                     <FaFile className="text-green-600 mr-3" />
                     <div>
-                      <p className="font-medium text-gray-800">{vendorFile.name}</p>
+                      <p className="font-medium text-gray-800">
+                        {vendorFile.name}
+                      </p>
                       <p className="text-sm text-gray-500">
                         {(vendorFile.size / 1024).toFixed(1)} KB
                       </p>
@@ -239,40 +368,39 @@ const AddProject = ({ isOpen, onClose }) => {
 
         {/* Footer */}
         <div className="flex justify-end gap-3 p-6 border-t bg-gray-50 rounded-b-xl">
-  <button
-    onClick={handleClose}
-    className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
-  >
-    Cancel
-  </button>
+          <button
+            onClick={handleClose}
+            className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
+          >
+            Cancel
+          </button>
 
-  {view === 'project' ? (
-    <button
-      onClick={handleNext}
-      disabled={!projectFile || !projectName.trim()}
-      className={`px-6 py-2 rounded-lg font-semibold transition-colors ${
-        projectFile && projectName.trim()
-          ? 'bg-green-500 text-white hover:bg-green-600'
-          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-      }`}
-    >
-      Next
-    </button>
-  ) : (
-    <button
-      onClick={handleUpload}
-      disabled={!vendorFile}
-      className={`px-6 py-2 rounded-lg font-semibold transition-colors ${
-        vendorFile
-          ? 'bg-green-500 text-white hover:bg-green-600'
-          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-      }`}
-    >
-      Upload
-    </button>
-  )}
-</div>
-
+          {view === "project" ? (
+            <button
+              onClick={handleNext}
+              disabled={!projectFile || !projectName.trim()}
+              className={`px-6 py-2 rounded-lg font-semibold transition-colors ${
+                projectFile && projectName.trim()
+                  ? "bg-green-500 text-white hover:bg-green-600"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              }`}
+            >
+              Next
+            </button>
+          ) : (
+            <button
+              onClick={handleUpload}
+              disabled={!vendorFile}
+              className={`px-6 py-2 rounded-lg font-semibold transition-colors ${
+                vendorFile
+                  ? "bg-green-500 text-white hover:bg-green-600"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              }`}
+            >
+              Upload
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
