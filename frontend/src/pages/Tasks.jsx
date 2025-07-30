@@ -24,7 +24,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message }) => {
           </button>
         </div>
         <div className="p-6 text-center">
-          <FaCheckCircle className="text-[#00ABE4] text-5xl mx-auto mb-4" />
+          <FaCheckCircle className="text-green-600 text-5xl mx-auto mb-4" />
           <p className="text-gray-700 text-lg mb-6">{message}</p>
         </div>
         <div className="flex justify-end gap-3 p-6 border-t bg-gray-50 rounded-b-xl">
@@ -36,7 +36,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message }) => {
           </button>
           <button
             onClick={onConfirm}
-            className="px-6 py-2 bg-[#00ABE4] text-white rounded-lg font-semibold hover:bg-[#008ec2] transition-colors"
+            className="px-6 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-[#008ec2] transition-colors"
           >
             Proceed to Submit
           </button>
