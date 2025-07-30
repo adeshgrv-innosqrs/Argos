@@ -18,26 +18,26 @@ const Login = () => {
       return;
     }
 
-    axios.post('http://127.0.0.1:8000/api/auth/login/', { username, password, role })
-      .then(response => {
-        alert('Login successful');
+    // axios.post('http://127.0.0.1:8000/api/auth/login/', { username, password, role })
+    //   .then(response => {
+    //     alert('Login successful');
         
-       })
-      .catch(err => {
-        setError('Invalid credentials');  
-        return;
-      });
+    //    })
+    //   .catch(err => {
+    //     setError('Invalid credentials');  
+    //     return;
+    //   });
 
-    // setError('');
-    // login({ username, role });
+    setError('');
+    login({ username, role });
 
-    // if(role=='annotator'){
-    //   navigate('/index');
-    // }else if(role=='pm'){
-    //   navigate('/projects');
-    // }else if(role=='adjudicator'){
-    //   navigate('/review');
-    // }
+    if(role=='annotator'){
+      navigate('/index');
+    }else if(role=='pm'){
+      navigate('/projects');
+    }else if(role=='adjudicator'){
+      navigate('/review-tasks');
+    }
     
   };
 
@@ -77,8 +77,9 @@ const Login = () => {
             >
               <option value="">Choose your role</option>
               <option value="annotator">Annotator</option>
-              <option value="pm">PM</option>
               <option value="adjudicator">Adjudicator</option>
+              <option value="pm">PM</option>
+              
             </select>
           </div>
 

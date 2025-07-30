@@ -43,7 +43,7 @@ function App() {
         {/* Adjudicator Routes */}
 
         <Route
-          path="/review"
+          path="/review-tasks"
           element={
             <ProtectedRoute>
               <ADJTasks />

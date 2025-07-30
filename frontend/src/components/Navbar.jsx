@@ -13,8 +13,8 @@ const Navbar = () => {
       navigate('/index');
     } else if (user?.role === 'pm') {
       navigate('/projects');
-    } else if (user?.role === 'adjudicater') {
-      navigate('/'); 
+    } else if (user?.role === 'adjudicator') {
+      navigate('/review-tasks'); 
     } else {
       navigate('/');
     }
