@@ -10,6 +10,9 @@ import ProtectedRoute from './routes/ProtectedRoute';
 import PMQuestions from './pages/PMQuestions';
 import PMResponse from './pages/PMResponse';
 
+import ADJTasks from './pages/ADJTasks';
+import ADJResponse from './pages/ADJResponse';
+
 import { AuthProvider } from './context/AuthContext';
 
 function App() {
@@ -32,6 +35,27 @@ function App() {
           element={
             <ProtectedRoute>
               <Tasks />
+            </ProtectedRoute>
+          }
+        />
+
+
+        {/* Adjudicator Routes */}
+
+        <Route
+          path="/review"
+          element={
+            <ProtectedRoute>
+              <ADJTasks />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/annotator-response"
+          element={
+            <ProtectedRoute>
+              <ADJResponse />
             </ProtectedRoute>
           }
         />

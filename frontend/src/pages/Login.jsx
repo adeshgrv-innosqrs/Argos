@@ -35,6 +35,8 @@ const Login = () => {
     //   navigate('/index');
     // }else if(role=='pm'){
     //   navigate('/projects');
+    // }else if(role=='adjudicator'){
+    //   navigate('/review');
     // }
     
   };
@@ -76,7 +78,7 @@ const Login = () => {
               <option value="">Choose your role</option>
               <option value="annotator">Annotator</option>
               <option value="pm">PM</option>
-              <option value="adjudicator">Reviewer</option>
+              <option value="adjudicator">Adjudicator</option>
             </select>
           </div>
 

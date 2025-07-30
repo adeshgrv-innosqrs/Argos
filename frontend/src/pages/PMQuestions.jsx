@@ -136,7 +136,8 @@ function PMQuestions() {
                                     <th className="px-6 py-4 text-left font-semibold">Question</th>
                                     <th className="px-6 py-4 text-left font-semibold">Category</th>
                                     <th className="px-6 py-4 text-left font-semibold">Annotations</th>
-                                    <th className="px-6 py-4 text-left font-semibold">Annotator</th>
+                                    <th className="px-6 py-4 text-left font-semibold">Annotator1 </th>
+                                    <th className="px-6 py-4 text-left font-semibold">Annotator1 </th>
                                     <th className="px-6 py-4 text-left font-semibold">Completed</th>
                                     <th className="px-6 py-4 text-left font-semibold">Date</th>
                                 </tr>
@@ -152,7 +153,8 @@ function PMQuestions() {
                                         <td className="px-6 py-3">{t.question.text}</td>
                                         <td className="px-6 py-3">{t.question.category}</td>
                                         <td className="px-6 py-3">{t.annotations}</td>
-                                        <td className="px-6 py-3">{t.annotator || 'N/A'}</td>
+                                        <td className="px-6 py-3">{t.annotator1 || 'N/A'}</td>
+                                        <td className="px-6 py-3">{t.annotator2 || 'N/A'}</td>
                                         <td className="px-6 py-3">
                                             {t.annotations === 2 ? (
                                                 <span className="text-green-600 font-semibold">Yes</span>
